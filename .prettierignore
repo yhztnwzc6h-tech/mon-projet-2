@@ -1,0 +1,7 @@
+dist
+node_modules
+pipeline/.cache
+pipeline/test/fixtures
+public/data
+package-lock.json
+PROMPT.md

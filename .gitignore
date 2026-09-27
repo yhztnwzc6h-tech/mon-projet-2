@@ -1,0 +1,7 @@
+node_modules
+dist
+pipeline/.cache
+*.log
+.DS_Store
+test-results
+playwright-report
