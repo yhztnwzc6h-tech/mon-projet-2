@@ -387,3 +387,64 @@ export function parseHojaTerritorial(nombreHoja: string, filas: Filas): HojaPars
   }
   return { ...p, filas: out };
 }
+
+// ---------------------------------------------------------------------------
+// Barcelone : ville, districtes et barris
+// ---------------------------------------------------------------------------
+
+export type NivelBarcelona = 'ciudad' | 'distrito' | 'barrio';
+
+export interface FilaBarcelona {
+  nivel: NivelBarcelona;
+  /** Code officiel de l'Ajuntament : districte 1–10, barri 1–73 ; `null` pour la ville. */
+  codigo: number | null;
+  nombre: string;
+  valores: Omit<Registro, 'periodo'>;
+}
+
+/**
+ * Tableaux « Compravendes d'habitatge registrades a Barcelona » : une ligne
+ * « Barcelona* », puis les sections « Districtes municipals » et « Barris »,
+ * chaque ligne ayant son code dans la colonne « Codi » et son nom juste après.
+ */
+export function parseHojaBarcelona(nombreHoja: string, filas: Filas): HojaParseada<FilaBarcelona> {
+  const p = periodoDeHoja(nombreHoja, filas);
+  if (p.tipo !== 'dato') return p;
+  const col = detectarColumnas(filas, nombreHoja);
+  if (col.columnaCodigo == null) throw new Error(`Feuille « ${nombreHoja} » : colonne « Codi » introuvable.`);
+  const colNombre = col.columnaCodigo + 1;
+  const out: FilaBarcelona[] = [];
+  let seccion: NivelBarcelona | null = null;
+  for (let i = col.filaDatos; i < filas.length; i++) {
+    const fila = filas[i]!;
+    const nombre = texto(fila[colNombre]);
+    if (!nombre) continue;
+    if (/^districtes/i.test(nombre)) {
+      seccion = 'distrito';
+      continue;
+    }
+    if (/^barris$/i.test(nombre)) {
+      seccion = 'barrio';
+      continue;
+    }
+    const tieneDatos = [...col.campos.values()].some((c) => typeof fila[c] === 'number');
+    if (!tieneDatos) continue; // notes
+    const ctx = `Feuille « ${nombreHoja} », ${nombre}`;
+    if (/^barcelona\*?$/i.test(nombre)) {
+      out.push({ nivel: 'ciudad', codigo: null, nombre: 'Barcelona', valores: normalizarFila(fila, col, ctx) });
+      continue;
+    }
+    const codigo = aNumero(fila[col.columnaCodigo]);
+    if (!seccion || codigo == null || !Number.isInteger(codigo)) {
+      throw new Error(`${ctx} : ligne sans section ou sans code.`);
+    }
+    out.push({ nivel: seccion, codigo, nombre, valores: normalizarFila(fila, col, ctx) });
+  }
+  const n = (nivel: NivelBarcelona) => out.filter((f) => f.nivel === nivel).length;
+  if (n('ciudad') !== 1 || n('distrito') !== 10 || n('barrio') !== 73) {
+    throw new Error(
+      `Feuille « ${nombreHoja} » : attendu 1 ville, 10 districtes, 73 barris ; lu ${n('ciudad')}, ${n('distrito')}, ${n('barrio')}.`,
+    );
+  }
+  return { ...p, filas: out };
+}

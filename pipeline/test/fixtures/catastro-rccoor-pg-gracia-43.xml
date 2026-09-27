@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<consulta_coordenadas xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.catastro.meh.es/">
+  <control>
+    <cucoor>1</cucoor>
+    <cuerr>0</cuerr>
+  </control>
+  <coordenadas>
+    <coord>
+      <pc>
+        <pc1>0227802</pc1>
+        <pc2>DF3802E</pc2>
+      </pc>
+      <geo>
+        <xcen>2.164960</xcen>
+        <ycen>41.391700</ycen>
+        <srs>EPSG:4326</srs>
+      </geo>
+      <ldt>PS GRACIA 43 BARCELONA (BARCELONA)</ldt>
+    </coord>
+  </coordenadas>
+</consulta_coordenadas>

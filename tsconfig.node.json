@@ -4,5 +4,5 @@
     "lib": ["ES2023"],
     "types": ["node"]
   },
-  "include": ["pipeline", "shared", "vite.config.ts", "vitest.config.ts", "eslint.config.js"]
+  "include": ["pipeline", "pipeline/types", "shared", "vite.config.ts", "vitest.config.ts", "eslint.config.js"]
 }

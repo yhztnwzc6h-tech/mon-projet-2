@@ -8,14 +8,24 @@ Architecture 100 % statique : un pipeline Node.js produit des fichiers JSON dans
 
 ## État d'avancement
 
-| Étape | Contenu                                                             | État    |
-| ----- | ------------------------------------------------------------------- | ------- |
-| 1     | Exploration des sources ([rapport](docs/01-exploration-sources.md)) | ✅      |
-| 2     | Prototype sur Girona : pipeline, données, fiche commune             | ✅      |
-| 3     | Toute la Catalogne, carte choroplèthe, sélecteurs                   | à venir |
-| 4     | Couche cadastrale et infos parcelle                                 | à venir |
-| 5     | Barcelone par barri, comparateur, classements                       | à venir |
-| 6     | Finitions, PWA, page méthodologie, Action planifiée, déploiement    | à venir |
+L'app se concentre sur **Barcelone** : une carte 3D animée des 73 barris et 10 districtes.
+
+| Étape | Contenu                                                                                                                        | État    |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------- |
+| 1     | Exploration des sources ([rapport](docs/01-exploration-sources.md))                                                            | ✅      |
+| 2     | Pipeline de données (Catalogne + Barcelone), tests sur fichiers officiels                                                      | ✅      |
+| 3–5   | Carte de Barcelone : barris/districtes, 3D, frise animée 2013 → 2026, fiche zone, classement, recherche, parcelles du Catastro | ✅      |
+| 6     | Finitions : PWA, déploiement GitHub Pages, Action planifiée                                                                    | à venir |
+
+### Ce que montre la carte
+
+- **Indicateurs** : prix moyen au m² construit, prix moyen, nombre de ventes, variation sur un an ; logements tous types, anciens ou neufs (neuf libre).
+- **Période** : 12 derniers mois (4 trimestres glissants publiés) ou un trimestre précis, de fin 2013 à aujourd'hui ; bouton ▶ pour voir l'évolution animée.
+- **Couleurs** : 6 classes par quantiles (période affichée, ou toute la série pour comparer dans le temps) ; **hauteur 3D** proportionnelle à la valeur, sur une échelle commune à toutes les périodes.
+- **Fiche d'une zone** : chiffres clés animés, rang parmi les barris, répartition ancien/neuf/protégé, comparaison districte / ville, courbes d'évolution.
+- **Classement** des barris avec un filtre sur le nombre minimal de ventes.
+- **Recherche** d'un barri ou d'une adresse (géocodeur de l'ICGC) ; à partir du zoom 16, **parcelles du Catastro** et, au clic, leurs données publiques (usage, surface, année) avec un lien vers la fiche officielle et le Valor de Referencia.
+- Lien direct vers une zone : `#b31` (barri 31), `#d02` (districte 2).
 
 ## Sources
 
@@ -66,6 +76,8 @@ Fichiers produits :
 - `municipios.json` : les 947 communes (code INE, nom, comarque, province) ;
 - `historico/municipio/<INE>.json` : séries trimestrielles et sur 4 trimestres (registre + notaires) ;
 - `historico/comarca/<id>.json`, `historico/provincia/<id>.json`, `historico/catalunya.json` : séries de comparaison ;
+- `barcelona/datos.json` : toutes les séries de Barcelone (ville, districtes, barris) dans un format compact ;
+- `barcelona/barrios.geojson`, `barcelona/distritos.geojson` : limites simplifiées avec mapshaper ;
 - `sources.json` : source, URL, licence, date de téléchargement, dernière période.
 
 ## Qualité
@@ -75,6 +87,9 @@ npm test               # tests unitaires (Vitest), avec des fixtures issues des 
 npm run lint
 npm run format:check
 npm run typecheck
+npm run test:e2e       # Playwright : ouvrir la carte, chercher un barri, ouvrir sa fiche
 ```
+
+Si Chromium est déjà installé ailleurs, `PW_CHROMIUM=/chemin/vers/chromium npm run test:e2e`.
 
 Les fixtures de `pipeline/test/fixtures/` se régénèrent avec `npx tsx pipeline/scripts/crear-fixtures.ts`.

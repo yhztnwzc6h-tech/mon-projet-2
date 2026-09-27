@@ -43,9 +43,8 @@ export function GraficoSeries({ series, formato, alto = 260, titulo }: Props) {
       periodos.map(fechaDeTrimestre),
       ...series.map((s) => periodos.map((p) => s.puntos.get(p) ?? null)),
     ];
-    const oscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const ejes = oscuro ? '#94a3b8' : '#475569';
-    const rejilla = oscuro ? 'rgba(148,163,184,0.15)' : 'rgba(71,85,105,0.12)';
+    const ejes = colorCss('--tinta-suave');
+    const rejilla = colorCss('--borde');
 
     const opciones: Options = {
       width: el.clientWidth,

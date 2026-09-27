@@ -101,3 +101,57 @@ export const fuentesSchema = z.object({
   fuentes: z.array(fuenteSchema),
 });
 export type Fuentes = z.infer<typeof fuentesSchema>;
+
+// ---------------------------------------------------------------------------
+// Barcelone
+// ---------------------------------------------------------------------------
+
+/** Ordre des mesures dans les tableaux compacts de `barcelona/datos.json`. */
+export const CAMPOS_REGISTRO = [
+  'ventasTotal',
+  'ventasNuevoLibre',
+  'ventasNuevoProtegido',
+  'ventasUsado',
+  'supTotal',
+  'supNuevoLibre',
+  'supNuevoProtegido',
+  'supUsado',
+  'precioTotal',
+  'precioNuevo',
+  'precioUsado',
+  'm2Total',
+  'm2Nuevo',
+  'm2Usado',
+] as const satisfies readonly Exclude<keyof Registro, 'periodo'>[];
+export type CampoRegistro = (typeof CAMPOS_REGISTRO)[number];
+
+export const nivelBarcelonaSchema = z.enum(['ciudad', 'distrito', 'barrio']);
+export type NivelBarcelona = z.infer<typeof nivelBarcelonaSchema>;
+
+export const entidadBarcelonaSchema = z.object({
+  id: z.string().regex(/^(bcn|d\d{2}|b\d{2})$/),
+  nivel: nivelBarcelonaSchema,
+  codigo: z.number().int().positive().nullable(),
+  nombre: z.string().min(1),
+  /** Districte d'un barri (`d01`…). */
+  distrito: z.string().optional(),
+});
+export type EntidadBarcelona = z.infer<typeof entidadBarcelonaSchema>;
+
+const filaCompacta = z.array(z.number().nullable()).length(CAMPOS_REGISTRO.length).nullable();
+
+/**
+ * Toutes les séries de Barcelone dans un seul fichier compact :
+ * `valores[ventana][id][i]` = mesures (dans l'ordre de `campos`) pour `periodos[ventana][i]`,
+ * ou `null` si l'entité n'a pas de ligne publiée pour cette période.
+ */
+export const datosBarcelonaSchema = z.object({
+  campos: z.array(z.string()),
+  periodos: z.object({ T: z.array(periodo), '4T': z.array(periodo) }),
+  entidades: z.array(entidadBarcelonaSchema).length(84),
+  valores: z.object({
+    T: z.record(z.string(), z.array(filaCompacta)),
+    '4T': z.record(z.string(), z.array(filaCompacta)),
+  }),
+});
+export type DatosBarcelona = z.infer<typeof datosBarcelonaSchema>;

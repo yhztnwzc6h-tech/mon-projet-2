@@ -25,6 +25,18 @@ const COPIAS: Record<string, string> = {
   'TERR_acum1any_2024.xlsx': `${HAB}2024/TERR_acum1any_2024.xlsx`,
   'Trimestrals_per_ambits_2026.xlsx': `${HAB}2026/Trimestrals_per_ambits_2026.xlsx`,
   'idescat-municipis.csv': IDESCAT_MUNICIPIS_URL,
+  'BCN_trimestral_2014.xls': `${HAB}2014/BCN_trimestral_2014.xls`,
+  'BCN_acum1any_2024.xlsx': `${HAB}2024/BCN_acum1any_2024.xlsx`,
+  'Trimestrals_Barcelona_2026.xlsx': `${HAB}2026/Trimestrals_Barcelona_2026.xlsx`,
+  // Réponses du Catastro (Pg. de Gràcia 43, un point en mer, un immeuble de Girona).
+  'catastro-rccoor-pg-gracia-43.xml':
+    'https://ovc.catastro.meh.es/ovcservweb/OVCSWLocalizacionRC/OVCCoordenadas.asmx/Consulta_RCCOOR?SRS=EPSG:4326&Coordenada_X=2.164960&Coordenada_Y=41.391700',
+  'catastro-rccoor-mar.xml':
+    'https://ovc.catastro.meh.es/ovcservweb/OVCSWLocalizacionRC/OVCCoordenadas.asmx/Consulta_RCCOOR?SRS=EPSG:4326&Coordenada_X=2.2&Coordenada_Y=41.2',
+  'catastro-dnprc-bico.json':
+    'https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/COVCCallejero.svc/json/Consulta_DNPRC?RefCat=0227802DF3802E',
+  'catastro-dnprc-lista.json':
+    'https://ovc.catastro.meh.es/OVCServWeb/OVCWcfCallejero/COVCCallejero.svc/json/Consulta_DNPRC?RefCat=5381917DG8458A',
 };
 
 type Filas = unknown[][];

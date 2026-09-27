@@ -15,6 +15,7 @@ import { HABITATGE_INDEX } from './sources/habitatge/discover.ts';
 import { cargarMunicipios, IDESCAT_MUNICIPIS_URL } from './sources/idescat/municipios.ts';
 import { cargarMivau, MIVAU_PAGINA, sumar4T } from './sources/mivau/transacciones.ts';
 import { crearResolutor } from './territorios.ts';
+import { buildBarcelona } from './build-barcelona.ts';
 
 export interface OpcionesBuild {
   salida: string;
@@ -152,6 +153,17 @@ export async function build(op: OpcionesBuild): Promise<void> {
       archivos: 1,
     },
   ];
+  fuentes.push(...(await buildBarcelona(out, op.anioActual)));
+  fuentes.push({
+    id: 'catastro',
+    nombre: 'Cartografía catastral (WMS INSPIRE) y consulta de datos no protegidos',
+    organismo: 'Dirección General del Catastro',
+    url: 'https://www.catastro.hacienda.gob.es/webinspire/index.html',
+    licencia: 'Reutilización permitida citando «Dirección General del Catastro»',
+    descargado: ahora,
+    ultimoPeriodo: null,
+    archivos: 0,
+  });
   await escribir(path.join(out, 'sources.json'), fuentesSchema, { generado: ahora, fuentes });
   log(`Terminé : ${seleccion.length} commune(s), ${territoriosNecesarios.size} territoire(s) écrits dans ${out}.`);
 }

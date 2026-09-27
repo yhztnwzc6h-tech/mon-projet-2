@@ -3,8 +3,7 @@
   "compilerOptions": {
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
-    "types": ["vite/client", "geojson"]
+    "types": ["node", "geojson", "vite/client"]
   },
-  "include": ["src", "shared"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e", "playwright.config.ts"]
 }
