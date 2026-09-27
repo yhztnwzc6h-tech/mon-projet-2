@@ -435,7 +435,7 @@ export function Mapa(props: Props) {
       padding: margenes(),
       pitch: p.modo3d ? 50 : 0,
       bearing: p.modo3d ? m.getBearing() : 0,
-      maxZoom: 13.2,
+      maxZoom: window.innerWidth < 640 ? 12.4 : 13.2,
       duration: reducirMovimiento() ? 0 : 1400,
     });
   }
