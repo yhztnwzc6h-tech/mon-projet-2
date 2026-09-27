@@ -8,7 +8,7 @@ export function App() {
     <div className="min-h-dvh">
       <div
         role="note"
-        className="sticky top-0 z-10 border-b border-slate-200 bg-slate-100/95 px-4 py-1.5 text-center text-xs text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-300"
+        className="sticky top-[env(safe-area-inset-top,0px)] z-10 border-b border-slate-200 bg-slate-100/95 px-4 py-1.5 text-center text-xs text-slate-700 backdrop-blur dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-300"
       >
         Datos agregados por zona — no son precios de venta individuales
       </div>
