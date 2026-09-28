@@ -10,12 +10,12 @@ Architecture 100 % statique : un pipeline Node.js produit des fichiers JSON dans
 
 L'app se concentre sur **Barcelone** : une carte 3D animée des 73 barris et 10 districtes.
 
-| Étape | Contenu                                                                                                                        | État    |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ------- |
-| 1     | Exploration des sources ([rapport](docs/01-exploration-sources.md))                                                            | ✅      |
-| 2     | Pipeline de données (Catalogne + Barcelone), tests sur fichiers officiels                                                      | ✅      |
-| 3–5   | Carte de Barcelone : barris/districtes, 3D, frise animée 2013 → 2026, fiche zone, classement, recherche, parcelles du Catastro | ✅      |
-| 6     | Finitions : PWA, déploiement GitHub Pages, Action planifiée                                                                    | à venir |
+| Étape | Contenu                                                                                                                        | État |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------ | ---- |
+| 1     | Exploration des sources ([rapport](docs/01-exploration-sources.md))                                                            | ✅   |
+| 2     | Pipeline de données (Catalogne + Barcelone), tests sur fichiers officiels                                                      | ✅   |
+| 3–5   | Carte de Barcelone : barris/districtes, 3D, frise animée 2013 → 2026, fiche zone, classement, recherche, parcelles du Catastro | ✅   |
+| 6     | PWA installable (hors ligne), déploiement GitHub Pages, mise à jour mensuelle automatique                                      | ✅   |
 
 ### Ce que montre la carte
 
@@ -44,6 +44,15 @@ Règles appliquées :
 - chaque chiffre affiché indique sa source et sa période ;
 - les deux mesures des volumes (registre / notaires) ne sont jamais mélangées ;
 - les « 4 trimestres glissants » sont ceux publiés par la Generalitat (moyenne des prix au m² de chaque vente), jamais recalculés.
+
+## Mise en ligne (GitHub Pages)
+
+- `.github/workflows/deploy.yml` construit l'app et la publie sur GitHub Pages à chaque push sur `main` (ou à la demande).
+- `.github/workflows/datos.yml` relance le pipeline **le 3 de chaque mois** (et à la demande) : si les données ont changé, il les commite sur `main` et redéploie. Le pipeline échoue bruyamment si le format d'une source a changé : l'Action apparaît alors en rouge et rien n'est publié.
+- Réglage unique à faire dans GitHub : _Settings → Pages → Build and deployment → Source : **GitHub Actions**_.
+- Adresse : `https://<utilisateur>.github.io/mon-projet-2/`.
+
+L'app est **installable** (PWA) : sur téléphone, « Ajouter à l'écran d'accueil ». Les données de Barcelone et les tuiles déjà vues restent consultables hors ligne.
 
 ## Développement local
 
