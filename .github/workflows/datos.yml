@@ -1,0 +1,51 @@
+name: Actualización mensual de datos
+
+on:
+  schedule:
+    # Le 3 de chaque mois à 05:17 UTC (la Generalitat publie le trimestre ~2 mois après sa fin).
+    - cron: '17 5 3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    outputs:
+      cambios: ${{ steps.commit.outputs.cambios }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Échoue bruyamment si le format d'une source a changé (validation Zod).
+      - run: npm run pipeline
+      - run: npm test
+      - id: commit
+        run: |
+          # sources.json change à chaque exécution (date de téléchargement) : on ne publie
+          # que si les données elles-mêmes ont changé.
+          if git diff --quiet -- public/data ':!public/data/sources.json'; then
+            echo "Sin cambios en los datos."
+            echo "cambios=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add public/data
+            git commit -m "Datos: actualización mensual ($(date -u +%Y-%m-%d))"
+            git push
+            echo "cambios=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  # Un push fait avec GITHUB_TOKEN ne déclenche pas d'autre workflow : on redéploie ici.
+  desplegar:
+    needs: pipeline
+    if: needs.pipeline.outputs.cambios == 'true'
+    uses: ./.github/workflows/deploy.yml
